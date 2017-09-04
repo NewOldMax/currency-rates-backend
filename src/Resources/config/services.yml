@@ -55,19 +55,15 @@ services:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
 
     app_refresh_token_manager:
+        parent: app_base_entity_manager
         class: CurrencyRates\Service\JWT\RefreshTokenManager
-        arguments:
-            - @doctrine.orm.entity_manager
-            - @translator
         autowire: true
 
     app_token_manager:
+        parent: app_base_entity_manager
         class: CurrencyRates\Service\JWT\TokenManager
         calls:
             - [setEncoder, [@app_jwt_encoder]]
-        arguments:
-            - @doctrine.orm.entity_manager
-            - @translator
         autowire: true
 
     app_token_repository:
@@ -107,3 +103,22 @@ services:
             - [setEncoder, [@security.password_encoder]]
         arguments: ['@security.token_storage', '@security.authentication.manager', '@app_user_provider']
         public: false
+
+    #currency rate
+    app_currency_rate_manager:
+        parent: app_base_entity_manager
+        class: CurrencyRates\Service\CurrencyRate\CurrencyRateManager
+        calls:
+            - [setRateFetcher, [@app_currency_rate_fetcher]]
+        autowire: true
+
+    app_currency_rate_repository:
+        class: CurrencyRates\Service\CurrencyRate\CurrencyRateRepository
+        abstract: true
+        factory: ["@doctrine", getRepository]
+
+    app_currency_rate_fetcher:
+        class: CurrencyRates\Service\CurrencyRate\CurrencyRateFetcher
+        arguments:
+            - "%base_currency%"
+    

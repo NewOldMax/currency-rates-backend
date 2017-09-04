@@ -1,0 +1,16 @@
+CurrencyRates\Entity\CurrencyRate:
+    type: entity
+    repositoryClass: CurrencyRates\Service\CurrencyRate\CurrencyRateRepository
+    table: currency_rates
+    id:
+        id:
+            type: string
+            generator: { strategy: UUID }
+    fields:
+        currency:
+            type: string
+            length: 3
+        value:
+            type: float
+        date:
+            type: date

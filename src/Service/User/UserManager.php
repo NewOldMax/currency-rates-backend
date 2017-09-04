@@ -44,10 +44,6 @@ class UserManager extends Manager
         return $user;
     }
 
-    /**
-     * @param $id
-     * @return User
-     */
     public function get($id)
     {
         if ($user = $this->em->getRepository(User::class)->find($id)) {
