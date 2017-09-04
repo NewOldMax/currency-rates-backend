@@ -13,9 +13,9 @@ use CurrencyRates\Entity\User;
 class IndexController extends BaseController
 {
     /**
-     * @Route   ("/")
+     * @Route   ("/health")
      * @Method  ("GET")
-     * You can use this to check your server health
+     * You can use this to check your server is alive
      */
     public function indexAction(Request $request)
     {
