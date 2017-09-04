@@ -1,0 +1,109 @@
+services:
+
+    app_base_entity_manager:
+        class: CurrencyRates\Service\Manager
+        abstract: true
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@translator"
+
+    app_base_entity_repository:
+        class: CurrencyRates\Service\EntityRepository
+        abstract: true
+        factory: ["@doctrine", getRepository]
+
+    #user services
+    app_user_manager:
+        parent: app_base_entity_manager
+        class: CurrencyRates\Service\User\UserManager
+        calls:
+            - [setEncoder, ["@security.password_encoder"]]
+        autowire: true
+
+    app_user_repository:
+        parent: "app_base_entity_repository"
+        class: CurrencyRates\Service\User\UserRepository
+        arguments:
+            - CurrencyRates\Entity\User
+
+    #jwt services
+    app_jwt_encoder:
+        class: CurrencyRates\Service\JWT\Encoder
+        arguments:
+            - "%jwt_secret_key%"
+            - "%jwt_token_ttl%"
+
+    app_jwt_auth_success_handler:
+        class: CurrencyRates\Service\JWT\AuthenticationSuccessHandler
+        arguments:
+            - @lexik_jwt_authentication.jwt_manager
+            - @event_dispatcher
+            - @app_refresh_token_manager
+
+    app_jwt_decoded_listener:
+        class: CurrencyRates\Service\JWT\DecodedListener
+        calls:
+            - [setEntityManager, [@doctrine.orm.entity_manager]]
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded }
+
+    app_jwt_created_listener:
+        class: CurrencyRates\Service\JWT\JWTCreatedListener
+        calls:
+            - [setEntityManager, [@doctrine.orm.entity_manager]]
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+
+    app_refresh_token_manager:
+        class: CurrencyRates\Service\JWT\RefreshTokenManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @translator
+        autowire: true
+
+    app_token_manager:
+        class: CurrencyRates\Service\JWT\TokenManager
+        calls:
+            - [setEncoder, [@app_jwt_encoder]]
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @translator
+        autowire: true
+
+    app_token_repository:
+        class: CurrencyRates\Service\JWT\TokenRepository
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - CurrencyRates\Entity\Token
+
+    app_refresh_token_repository:
+        class: CurrencyRates\Service\JWT\RefreshTokenRepository
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - CurrencyRates\Entity\RefreshToken
+
+    #security
+    app_user_provider:
+        class: CurrencyRates\Service\User\UserProvider
+        autowire: true
+        calls:
+            - [setEntityManager, [@doctrine.orm.entity_manager]]
+            - [setUserManager, [@app_user_manager]]
+
+    app_auth_provider:
+        class: CurrencyRates\Service\Security\AuthenticationProvider
+        calls:
+            - [setEncoder, [@security.password_encoder]]
+        arguments:
+            - @app_user_provider
+            - '%kernel.cache_dir%/security/nonces'
+        public: false
+
+    app_auth_listener:
+        class: CurrencyRates\Service\Security\AuthenticationListener
+        calls:
+            - [setEncoder, [@security.password_encoder]]
+        arguments: ['@security.token_storage', '@security.authentication.manager', '@app_user_provider']
+        public: false

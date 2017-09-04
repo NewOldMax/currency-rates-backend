@@ -1,0 +1,18 @@
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /api/connect
+
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /api/social
+
+google_login:
+    path: /api/social/check-google
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+    prefix: "/api"
+
+absolute_url:
+    path:      /

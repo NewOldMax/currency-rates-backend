@@ -1,0 +1,35 @@
+version: "2"
+services:
+
+    php:
+        build: '.'
+        depends_on:
+            - database
+        env_file: .env
+        volumes:
+            - '.:/srv'
+
+    api:
+        build: './devops/dockerfiles/nginx'
+        depends_on:
+            - php
+        ports:
+            - 0.0.0.0:8098:80
+            - 0.0.0.0:8097:443
+        volumes:
+            - './devops/dockerfiles/nginx/web:/srv'
+            - './certs:/certs'
+
+    database:
+        image: postgres:9.4
+        env_file: .env
+        environment:
+            - PGPASSWORD=example
+        volumes:
+            - dbdata:/var/lib/postgresql
+        ports:
+            - 0.0.0.0:8087:5432
+
+volumes:
+    dbdata:
+        driver: local

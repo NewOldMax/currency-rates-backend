@@ -1,0 +1,13 @@
+version: "2"
+
+services:
+
+    php:
+        tty: true
+        environment:
+            SYMFONY_ENV: test
+
+    database:
+        image: postgres:9.4
+        restart: always
+        volumes: []

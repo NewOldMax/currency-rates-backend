@@ -1,0 +1,19 @@
+CurrencyRates\Entity\RefreshToken:
+    type: entity
+    repositoryClass: CurrencyRates\Service\JWT\RefreshTokenRepository
+    table: refresh_tokens
+    id:
+        id:
+            type: string
+            generator: { strategy: UUID }
+    fields:
+        token:
+            type: text
+        valid:
+            type: datetime
+    manyToOne:
+       user:
+            targetEntity: User
+            joinColumn:
+                name: user_id
+                referencedColumnName: id

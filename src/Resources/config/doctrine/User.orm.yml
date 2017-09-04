@@ -1,0 +1,34 @@
+CurrencyRates\Entity\User:
+    type: entity
+    repositoryClass: CurrencyRates\Service\User\UserRepository
+    table: users
+    id:
+        id:
+            type: string
+            generator: { strategy: UUID }
+    fields:
+        name:
+            type: string
+            length: 255
+            nullable: true
+        email:
+            type: string
+            length: 255
+            nullable: true
+        active:
+            type: boolean
+        createdAt:
+            type: datetime
+        role:
+            type: string
+            length: 50
+        googleId:
+            type: string
+            length: 255
+            nullable: true
+        seed:
+            type: text
+            nullable: true
+    uniqueConstraints:
+        user_idx:
+          columns: [ email, googleId ]

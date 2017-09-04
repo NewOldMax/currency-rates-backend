@@ -1,0 +1,21 @@
+# refresh token
+refresh_token:
+    errors:
+        refresh_foreign: "You can\'t refresh foreign token"
+        tokens_must_provided:  JWT and refresh tokens must be provided
+    info:
+        expired_removed: Refresh token has been expired and removed
+
+# user
+user:
+    errors:
+        access_denied: Access denied
+        email_not_found: User with email %email% not found
+        already_activated: User already activated
+
+# entity
+entity:
+    errors:
+        not_found: %entity% with id %id% not found
+        unknown_value: Unknown value %value%
+        action_denied: Access denied to %action% %entity%

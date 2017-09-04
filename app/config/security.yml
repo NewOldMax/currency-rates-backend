@@ -1,0 +1,49 @@
+security:
+    encoders:
+        CurrencyRates\Entity\User: bcrypt
+
+    providers:
+        webservice:
+            id: app_user_provider
+
+    firewalls:
+
+        social:
+            pattern:  ^/api/social
+            stateless: true
+            anonymous: true
+            oauth:
+                check_path: /api/social
+                success_handler: app_jwt_auth_success_handler
+                resource_owners:
+                    google: /api/social/check-google
+                login_path: /api/social
+                use_forward: false
+                failure_path: /api/social
+                oauth_user_provider:
+                    service: app_user_provider
+            provider: webservice
+
+        api:
+            pattern:   ^/api
+            stateless: true
+            lexik_jwt: ~
+            anonymous: ~
+
+        dev:
+            pattern: ^/(_(profiler|wdt|error)|css|images|js)/
+            security: false
+
+        default:
+            anonymous: ~
+
+        refresh:
+            pattern:  ^/api/token/refresh
+            stateless: true
+            anonymous: true
+
+    access_control:
+        - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/connect, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/social, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

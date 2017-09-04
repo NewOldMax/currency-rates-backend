@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+aliasName=$1
+
+case $aliasName in
+compose)
+    docker-compose -p currency_rates ${*:2}
+    ;;
+psql)
+    docker-compose -p currency_rates run database sh -c 'exec psql -h database -p 5432 -U $POSTGRES_USER'
+    ;;
+project)
+    docker-compose -p currency_rates up -d
+    ;;
+populate-data)
+    docker-compose -p currency_rates run php sh -c 'exec devops/scripts/populate_data.sh'
+    ;;
+php)
+    docker-compose -p currency_rates run --user $(id -u) --no-deps php $@
+    ;;
+behat)
+    docker-compose -p currency_rates -f docker-compose.yml -f devops/docker-compose.test.yml run --no-deps php bin/behat "${*:2}"
+    ;;
+console)
+    docker-compose -p currency_rates run --user $(id -u) --no-deps php app/console ${*:2}
+    ;;
+composer)
+    docker run --rm -v $(pwd):/app composer/composer ${*:2}
+    ;;
+*)
+    echo "unknown alias \"$aliasName\""
+    ;;
+esac
+
+exit 0

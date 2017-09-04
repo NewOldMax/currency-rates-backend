@@ -1,0 +1,13 @@
+CurrencyRates\Entity\Token:
+    type: entity
+    repositoryClass: CurrencyRates\Service\JWT\TokenRepository
+    table: tokens
+    id:
+        id:
+            type: string
+            generator: { strategy: UUID }
+    fields:
+        token:
+            type: text
+        expiredAt:
+            type: datetime

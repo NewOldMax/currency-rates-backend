@@ -1,0 +1,14 @@
+fos_rest:
+    param_fetcher_listener: true
+    body_listener:
+        array_normalizer: 
+            service: fos_rest.normalizer.camel_keys
+            forms: true
+
+    routing_loader:
+            default_format: json
+
+    exception:
+        codes:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+            'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT

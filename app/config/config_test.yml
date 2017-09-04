@@ -1,0 +1,32 @@
+imports:
+    - { resource: config_dev.yml }
+
+doctrine:
+    dbal:
+        driver:   pdo_pgsql
+        dbname:   "%database_name%_test"
+
+framework:
+    test: ~
+    session:
+        storage_id: session.storage.mock_file
+    profiler:
+        collect: false
+
+#doctrine:
+#    orm:
+#        metadata_cache_driver: apc
+#        result_cache_driver: apc
+#        query_cache_driver: apc
+
+web_profiler:
+    toolbar: false
+    intercept_redirects: false
+
+swiftmailer:
+    disable_delivery: true
+
+security:
+    encoders:
+        CurrencyRates\Entity\User:
+            algorithm: plaintext
