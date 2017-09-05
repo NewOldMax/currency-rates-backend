@@ -28,7 +28,6 @@ class DecodedListener
         if (!($request = $this->requestStack->getCurrentRequest())) {
             return;
         }
-
         $payload = $event->getPayload();
         $request = $this->requestStack->getCurrentRequest();
         try {
