@@ -22,7 +22,7 @@ class UserManager extends Manager
     {
         $this->validate($fields, User::class);
         $fields['email'] = trim($fields['email']);
-        $user = User::createFromArray();
+        $user = User::createFromArray($fields);
         return $user;
     }
 

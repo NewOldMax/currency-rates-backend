@@ -59,6 +59,9 @@ class PairManager extends Manager
         if (isset($fields['duration'])) {
             $this->checkDuration($fields['duration']);
         }
+        if (isset($fields['value'])) {
+            $this->checkValue($fields['value']);
+        }
     }
 
     private function isCurrenciesEqual(Pair $pair) : void
@@ -78,6 +81,16 @@ class PairManager extends Manager
                 'entity.errors.unknown_value',
                 400,
                 ['%value%' => $duration]
+            );
+        }
+    }
+
+    private function checkValue(float $value)
+    {
+        if ($value <= 0) {
+            $this->throwException(
+                'pair.errors.value_must_be_greater_zero',
+                400
             );
         }
     }

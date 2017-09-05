@@ -1,0 +1,25 @@
+default:
+    gherkin:
+        filters:
+            tags: "~@todo"
+
+    suites:
+
+        users:
+            paths:    [ %paths.base%/features/users ]
+            contexts:
+                - features\CurrencyRates\Context\UsersContext
+
+        pairs:
+            paths:    [ %paths.base%/features/pairs ]
+            contexts:
+                - features\CurrencyRates\Context\PairsContext
+
+    formatters:
+        pretty: true
+
+    extensions:
+        Behat\Symfony2Extension:
+            kernel:
+                env: test
+                debug: true

@@ -24,3 +24,4 @@ entity:
 pair:
     errors:
         must_not_be_equal: Base currency and target currency must be different
+        value_must_be_greater_zero: Value must be greater than zero

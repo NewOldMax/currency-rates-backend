@@ -42,15 +42,17 @@ services:
 
     app_jwt_decoded_listener:
         class: CurrencyRates\Service\JWT\DecodedListener
-        calls:
-            - [setEntityManager, [@doctrine.orm.entity_manager]]
+        arguments:
+            - @request_stack
+            - @doctrine.orm.entity_manager
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded }
 
     app_jwt_created_listener:
         class: CurrencyRates\Service\JWT\JWTCreatedListener
-        calls:
-            - [setEntityManager, [@doctrine.orm.entity_manager]]
+        arguments:
+            - @request_stack
+            - @doctrine.orm.entity_manager
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
 

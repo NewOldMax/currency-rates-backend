@@ -1,6 +1,7 @@
 <?php
 namespace CurrencyRates\Service\JWT;
 
+use Symfony\Component\HttpFoundation\RequestStack;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTDecodedEvent;
 use CurrencyRates\Entity\Token;
 use CurrencyRates\Entity\User;
@@ -8,10 +9,12 @@ use CurrencyRates\Entity\User;
 class DecodedListener
 {
 
-    protected $em;
+    private $requestStack;
+    private $em;
 
-    public function setEntityManager($em)
+    public function __construct(RequestStack $requestStack, $em)
     {
+        $this->requestStack = $requestStack;
         $this->em = $em;
     }
 
@@ -22,12 +25,12 @@ class DecodedListener
      */
     public function onJWTDecoded(JWTDecodedEvent $event)
     {
-        if (!($request = $event->getRequest())) {
+        if (!($request = $this->requestStack->getCurrentRequest())) {
             return;
         }
 
         $payload = $event->getPayload();
-        $request = $event->getRequest();
+        $request = $this->requestStack->getCurrentRequest();
         try {
             $jwt = explode('Bearer ', $request->headers->all()['authorization'][0])[1];
             if ($this->em->getRepository(Token::class)->findOneBy(['token' => $jwt])) {
