@@ -1,0 +1,42 @@
+<html>
+    <body onLoad="setJWT()">
+        <script type="text/javascript">
+            var msg = {token:"{{jwt}}", refreshToken:"{{refreshToken}}"};
+            function awaitPostMessage() {
+                var isReactNativePostMessageReady = !!window.originalPostMessage;
+                var queue = [];
+                var currentPostMessageFn = function store(message) {
+                    if (queue.length > 100) queue.shift();
+                    queue.push(message);
+                };
+                if (!isReactNativePostMessageReady) {
+                    Object.defineProperty(window, "postMessage", {
+                        configurable: true,
+                        enumerable: true,
+                        get() {
+                            return currentPostMessageFn;
+                        },
+                        set(fn) {
+                            currentPostMessageFn = fn;
+                            isReactNativePostMessageReady = true;
+                            setTimeout(sendQueue, 0);
+                        }
+                    });
+                }
+
+                function sendQueue() {
+                    while (queue.length > 0) window.postMessage(queue.shift());
+                }
+            }
+            function setJWT() {
+                awaitPostMessage();
+                if (window.opener) {
+                    window.opener.postMessage(msg, "*");
+                } else {
+                    window.postMessage(JSON.stringify(msg));
+                }
+            }
+
+        </script>
+    </body>
+</html>

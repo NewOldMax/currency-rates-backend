@@ -6,10 +6,11 @@ use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
+use Symfony\Component\Templating\EngineInterface;
 use CurrencyRates\Entity\RefreshToken;
 
 class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterface
@@ -23,8 +24,8 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
      * @var EventDispatcherInterface
      */
     protected $dispatcher;
-
     protected $refreshManager;
+    protected $templating;
 
     /**
      * @param JWTManager               $jwtManager
@@ -33,11 +34,13 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
     public function __construct(
         JWTManager $jwtManager,
         EventDispatcherInterface $dispatcher,
-        RefreshTokenManager $refreshManager
+        RefreshTokenManager $refreshManager,
+        EngineInterface $templating
     ) {
         $this->jwtManager = $jwtManager;
         $this->dispatcher = $dispatcher;
         $this->refreshManager = $refreshManager;
+        $this->templating = $templating;
     }
 
     /**
@@ -59,7 +62,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
         $jwtEm->persist($refreshToken);
         $jwtEm->flush();
 
-        $response = new JsonResponse();
+        $response = new Response();
         $event    = new AuthenticationSuccessEvent(
             ['token' => $jwt, 'refreshToken' => $refreshToken->getToken()],
             $user,
@@ -68,7 +71,10 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
         );
 
         $this->dispatcher->dispatch(Events::AUTHENTICATION_SUCCESS, $event);
-        $response->setData($event->getData());
+        $response->setContent($this->templating->render('AppBundle:auth:social.html.twig', [
+            'jwt' => $jwt,
+            'refreshToken' => $refreshToken->getToken(),
+        ]));
 
         return $response;
     }

@@ -92,17 +92,17 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
             if ($owner == 'google') {
                 if (!$user = $this->em->getRepository(User::class)->findOneBy(['googleId' => $fields['id']])) {
                     $user = $this->manager->createFromGoogle($fields);
+                    $this->em->persist($user);
+                    $this->em->flush();
                 }
             } else {
                 throw new AuthenticationException(
                     sprintf('Unknown provider "%s".', $owner)
                 );
             }
-            if ($user) {
-                $this->em->persist($user);
-                $this->em->flush();
-                return $user;
-            }
+        }
+        if ($user) {
+            return $user;
         }
         throw new AuthenticationException(
             sprintf('Cannot authentificate user with %s provider', $owner)
