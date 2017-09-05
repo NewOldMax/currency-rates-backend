@@ -1,0 +1,26 @@
+CurrencyRates\Entity\Pair:
+    type: entity
+    repositoryClass: CurrencyRates\Service\Pair\PairRepository
+    table: pairs
+    id:
+        id:
+            type: string
+            generator: { strategy: UUID }
+    fields:
+        value:
+            type: float
+        baseCurrency:
+            type: string
+            length: 3
+        targetCurrency:
+            type: string
+            length: 3
+        duration:
+            type: string
+            length: 50
+    manyToOne:
+        user:
+            targetEntity: User
+            joinColumn:
+                name: user_id
+                referencedColumnName: id

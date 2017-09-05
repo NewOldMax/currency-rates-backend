@@ -81,7 +81,7 @@ class SecurityController extends BaseController
     {
         $em = $this->getEntityManager();
         $manager = $this->get('app_refresh_token_manager');
-        $user = $this->getUser();
+        $user = $this->getAuthenticatedUser();
         if ($tokens = $em->getRepository(RefreshToken::class)->findBy(['user' => $user])) {
             foreach ($tokens as $key => $value) {
                 $manager->delete($value);

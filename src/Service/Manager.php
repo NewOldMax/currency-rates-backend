@@ -50,13 +50,22 @@ class Manager
     public function checkCurrency(string $currency) : void
     {
         if (Currency::isValidCurrency($currency) === false) {
-            throw new TranslatedException(
-                $this->translator,
+            $this->throwException(
                 'entity.errors.unknown_value',
                 400,
                 ['%value%' => $currency]
             );
         }
+    }
+
+    public function throwException($msg, $code = 500, $values = [])
+    {
+        throw new TranslatedException(
+            $this->translator,
+            $msg,
+            $code,
+            $values
+        );
     }
 
     protected function isUnique(string $fieldName, $fieldValue, string $entityClass)

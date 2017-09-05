@@ -51,9 +51,7 @@ class BaseController extends Controller
         $result = [];
         foreach ($entities as $value) {
             if (is_object($value)) {
-                if (!$value->isMerged()) {
-                    $result []= $value->toArray($include);
-                }
+                $result []= $value->toArray($include);
             } else {
                 $result []= $value;
             }

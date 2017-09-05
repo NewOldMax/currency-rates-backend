@@ -19,3 +19,8 @@ entity:
         not_found: %entity% with id %id% not found
         unknown_value: Unknown value %value%
         action_denied: Access denied to %action% %entity%
+
+# pair
+pair:
+    errors:
+        must_not_be_equal: Base currency and target currency must be different

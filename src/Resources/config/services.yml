@@ -121,4 +121,14 @@ services:
         class: CurrencyRates\Service\CurrencyRate\CurrencyRateFetcher
         arguments:
             - "%base_currency%"
-    
+
+    #pair
+    app_pair_repository:
+        class: CurrencyRates\Service\Pair\PairRepository
+        abstract: true
+        factory: ["@doctrine", getRepository]
+
+    app_pair_manager:
+        parent: app_base_entity_manager
+        class: CurrencyRates\Service\Pair\PairManager
+        autowire: true

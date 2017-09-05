@@ -4,11 +4,7 @@ namespace CurrencyRates\Service\CurrencyRate;
 
 use CurrencyRates\Entity\CurrencyRate;
 use CurrencyRates\Service\Manager;
-use CurrencyRates\Service\Currency;
 use CurrencyRates\Service\Interfaces\CurrencyRateFetcherInterface;
-use CurrencyRates\Exception\TranslatedException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 
 class CurrencyRateManager extends Manager
 {
@@ -46,15 +42,14 @@ class CurrencyRateManager extends Manager
             return $rate;
         }
 
-        throw new TranslatedException(
-            $this->translator,
+        $this->throwException(
             'entity.errors.not_found',
             404,
             ['%entity%' => 'CurrencyRate', '%id%' => $id]
         );
     }
 
-    public function fetchRates(array $currencies, \DateTime $date)
+    public function fetchRates(array $currencies, \DateTime $date) : array
     {
         $result = [];
         $response = $this->rateFetcher->fetchMany($currencies, $date);
@@ -77,7 +72,7 @@ class CurrencyRateManager extends Manager
         return $result;
     }
 
-    private function getRateByCurrencyAndDate($currency, $date)
+    private function getRateByCurrencyAndDate($currency, $date) : array
     {
         return $this->em->getRepository(CurrencyRate::class)->findOneBy([
             'currency' => $currency,

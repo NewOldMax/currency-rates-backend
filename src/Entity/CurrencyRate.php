@@ -1,7 +1,9 @@
 <?php
 namespace CurrencyRates\Entity;
 
-class CurrencyRate
+use CurrencyRates\Service\BasicEntity;
+
+class CurrencyRate extends BasicEntity
 {
     //Properties
     protected $id;
@@ -34,6 +36,15 @@ class CurrencyRate
     public function patchable()
     {
         return ['value'];
+    }
+
+    public function toArray()
+    {
+        return [
+            'currency' => $this->currency,
+            'value' => (float) $this->value,
+            'date' => $this->formatDate($this->date, 'Y-m-d'),
+        ];
     }
 
     public function getDate()

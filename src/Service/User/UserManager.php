@@ -4,9 +4,6 @@ namespace CurrencyRates\Service\User;
 
 use CurrencyRates\Entity\User;
 use CurrencyRates\Service\Manager;
-use CurrencyRates\Exception\TranslatedException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 
 class UserManager extends Manager
 {
@@ -50,8 +47,7 @@ class UserManager extends Manager
             return $user;
         }
 
-        throw new TranslatedException(
-            $this->translator,
+        $this->throwException(
             'entity.errors.not_found',
             404,
             ['%entity%' => 'User', '%id%' => $id]
@@ -64,7 +60,11 @@ class UserManager extends Manager
             return $user;
         }
 
-        throw new TranslatedException($this->translator, 'user.errors.email_not_found', 404, ['%email%' => $email]);
+        $this->throwException(
+            'user.errors.email_not_found',
+            404,
+            ['%email%' => $email]
+        );
     }
 
     public function activate($id, $data)
@@ -73,7 +73,7 @@ class UserManager extends Manager
         $this->validate($data, User::class);
         $user = $this->get($id);
         if ($user->isActive()) {
-            throw new TranslatedException($this->translator, 'user.errors.already_activated', 400);
+            $this->throwException('user.errors.already_activated', 400);
         }
         $user->activate();
         $user->setPlainPassword($data['password']);
