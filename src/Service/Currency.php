@@ -38,4 +38,9 @@ class Currency
         'USD',
         'ZAR',
     ];
+
+    public static function isValidCurrency(string $currency) : bool
+    {
+        return in_array($currency, self::CURRENCIES);
+    }
 }

@@ -92,16 +92,4 @@ class CurrencyRateManager extends Manager
         }
         return $fields;
     }
-
-    private function checkCurrency(string $currency) : void
-    {
-        if (in_array($currency, Currency::CURRENCIES) === false) {
-            throw new TranslatedException(
-                $this->translator,
-                'entity.errors.unknown_value',
-                400,
-                ['%value%' => $currency]
-            );
-        }
-    }
 }

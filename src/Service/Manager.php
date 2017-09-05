@@ -8,8 +8,6 @@ use CurrencyRates\Entity\User;
 use CurrencyRates\Exception\AppException;
 use CurrencyRates\Exception\EntityFieldsValidationException;
 use CurrencyRates\Exception\TranslatedException;
-use CurrencyRates\Service\Event\EventManager;
-use CurrencyRates\Service\Http\CsvResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -47,6 +45,18 @@ class Manager
             $fields = $this->unsetInvalid($fields, $this->invalid);
         }
         return $fields;
+    }
+
+    public function checkCurrency(string $currency) : void
+    {
+        if (Currency::isValidCurrency($currency) === false) {
+            throw new TranslatedException(
+                $this->translator,
+                'entity.errors.unknown_value',
+                400,
+                ['%value%' => $currency]
+            );
+        }
     }
 
     protected function isUnique(string $fieldName, $fieldValue, string $entityClass)
