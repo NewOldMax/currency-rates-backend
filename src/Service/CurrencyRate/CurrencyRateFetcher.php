@@ -26,6 +26,7 @@ class CurrencyRateFetcher implements CurrencyRateFetcherInterface
         $exchange = new Exchange();
         $exchange->base($this->baseCurrency);
         $exchange->symbols($currencies);
+        $exchange->historical($date->format('Y-m-d'));
 
         $response = $exchange->getResult();
         $result = $this->prepareResult($response);

@@ -35,4 +35,9 @@ class CurrencyRate
     {
         return ['value'];
     }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
 }

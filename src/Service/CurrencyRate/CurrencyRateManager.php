@@ -66,14 +66,11 @@ class CurrencyRateManager extends Manager
                     'value' => $value,
                     'date' => $responseDate,
                 ];
-                $rate = null;
-                if ($rate = $this->getRateByCurrencyAndDate($key, $responseDate)) {
-                    $rate = $this->update($rate->getId(), $data);
-                } else {
+                if (!$this->getRateByCurrencyAndDate($key, $responseDate)) {
                     $rate = $this->create($data);
                     $this->em->persist($rate);
+                    $result []= $rate;
                 }
-                $result []= $rate;
             }
             $this->em->flush();
         }
