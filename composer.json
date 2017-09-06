@@ -10,7 +10,7 @@
         "psr-4": {"features\\CurrencyRates\\": "features/bootstrap"}
     },
     "require": {
-        "php": ">=7.1.9",
+        "php": ">=7.1.*",
         "symfony/symfony": "2.8.*",
         "twig/twig": "1.34.4",
         "doctrine/orm": "~2.5",
