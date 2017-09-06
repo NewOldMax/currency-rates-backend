@@ -43,12 +43,22 @@ class CurrencyRate extends BasicEntity
         return [
             'currency' => $this->currency,
             'value' => (float) $this->value,
-            'date' => $this->formatDate($this->date, 'Y-m-d'),
+            'date' => $this->getFormattedDate(),
         ];
     }
 
     public function getDate()
     {
         return $this->date;
+    }
+
+    public function getFormattedDate()
+    {
+        return $this->formatDate($this->date, 'Y-m-d');
+    }
+
+    public function getValue()
+    {
+        return $this->value;
     }
 }

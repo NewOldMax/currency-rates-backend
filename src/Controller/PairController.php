@@ -95,6 +95,20 @@ class PairController extends BaseController
         return new JsonResponse('', Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * @Route   ("/pairs/{id}/historical")
+     * @Method  ("GET")
+     */
+    public function getHistoricalInfoAction($id, Request $request)
+    {
+        $this->checkAccess($this->getAuthenticatedUser(), $id);
+
+        $rates = $this->getManager()
+            ->setRateManager($this->getRateManager())
+            ->getHistoricalInfo($id);
+        return $this->viewCollection('rates', $rates);
+    }
+
     private function checkAccess(User $user, $pairId)
     {
         $pair = $this->getManager()->get($pairId);
@@ -106,5 +120,10 @@ class PairController extends BaseController
     public function getManager()
     {
         return $this->get('app_pair_manager');
+    }
+
+    public function getRateManager()
+    {
+        return $this->get('app_currency_rate_manager');
     }
 }

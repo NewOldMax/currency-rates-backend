@@ -4,11 +4,27 @@ namespace CurrencyRates\Service\Pair;
 
 use CurrencyRates\Entity\Pair;
 use CurrencyRates\Service\Manager;
+use CurrencyRates\Service\CurrencyRate\CurrencyRateManager;
 
 class PairManager extends Manager
 {
     protected $required = ['baseCurrency', 'targetCurrency', 'duration'];
     protected $unique = [];
+
+    protected $rateManager;
+    protected $baseCurrency;
+
+    public function setRateManager(CurrencyRateManager $rateManager)
+    {
+        $this->rateManager = $rateManager;
+        return $this;
+    }
+
+    public function setBaseCurrency(string $baseCurrency)
+    {
+        $this->baseCurrency = $baseCurrency;
+        return $this;
+    }
 
     public function create(array $fields) : Pair
     {
@@ -46,6 +62,57 @@ class PairManager extends Manager
         $pair = $this->get($id);
         $this->em->remove($pair);
         return $pair;
+    }
+
+    public function getHistoricalInfo($id) : array
+    {
+        $result = [];
+        $pair = $this->get($id);
+
+        $date = new \DateTime(date('Y-m-d'));
+        $date->modify('-'.$pair->getDuration());
+        $rates = $this->rateManager->getRatesFromDate(
+            $date,
+            $pair->getTargetCurrency()
+        );
+        if ($this->baseCurrency !== $pair->getBaseCurrency()) {
+            $rates = $this->calculateRates(
+                $rates,
+                $date,
+                $pair->getBaseCurrency()
+            );
+        }
+        return $rates;
+    }
+
+    private function calculateRates(
+        array $rates,
+        \DateTime $date,
+        $currency
+    ) {
+        $result = [];
+        $newRates = $this->rateManager->getRatesFromDate(
+            $date,
+            $currency
+        );
+        if ($newRates && $rates && count($newRates) == count($rates)) {
+            foreach ($rates as $key => $rate) {
+                $value = $newRates[$key]->getValue();
+                if ($value == 0) {
+                    $value = 1;
+                }
+                $result[$rate->getFormattedDate()] = round($rate->getValue() / $value, 5);
+            }
+            $rates = [];
+            foreach ($result as $key => $value) {
+                $rates []= $this->rateManager->create([
+                    'currency' => $currency,
+                    'value' => $value,
+                    'date' => $key,
+                ]);
+            }
+        }
+        return $rates;
     }
 
     private function checkFields(array $fields) : void

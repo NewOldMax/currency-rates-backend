@@ -1,4 +1,2 @@
-currency-rates
-==============
+### Currency Rates test project (backend)
 
-A Symfony project created on September 4, 2017, 11:07 am.

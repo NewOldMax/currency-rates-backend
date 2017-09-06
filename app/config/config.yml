@@ -79,6 +79,7 @@ lexik_jwt_authentication:
     pass_phrase:      "%jwt_key_pass_phrase%"
     token_ttl:        "%jwt_token_ttl%"
     encoder_service:  app_jwt_encoder
+    user_identity_field: email
 
 hwi_oauth:
     http_client:

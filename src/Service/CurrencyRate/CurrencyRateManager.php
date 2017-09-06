@@ -18,7 +18,7 @@ class CurrencyRateManager extends Manager
         $this->rateFetcher = $rateFetcher;
     }
 
-    private function create(array $fields) : CurrencyRate
+    public function create(array $fields) : CurrencyRate
     {
         $this->validate($fields, CurrencyRate::class);
         $fields = $this->prepare($fields);
@@ -72,9 +72,17 @@ class CurrencyRateManager extends Manager
         return $result;
     }
 
+    public function getRatesFromDate(\DateTime $date, string $currency) : array
+    {
+        return $this->em->getRepository(CurrencyRate::class)->findFromDate(
+            $date,
+            $currency
+        );
+    }
+
     private function getRateByCurrencyAndDate($currency, $date) : array
     {
-        return $this->em->getRepository(CurrencyRate::class)->findOneBy([
+        return $this->em->getRepository(CurrencyRate::class)->findBy([
             'currency' => $currency,
             'date' => $date,
         ]);

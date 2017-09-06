@@ -134,4 +134,6 @@ services:
     app_pair_manager:
         parent: app_base_entity_manager
         class: CurrencyRates\Service\Pair\PairManager
+        calls:
+            - [setBaseCurrency, ["%base_currency%"]]
         autowire: true

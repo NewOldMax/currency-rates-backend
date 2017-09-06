@@ -90,7 +90,7 @@ class Manager
      * @param $date
      * @return \DateTime|null
      */
-    private function convertStringToDate($date)
+    protected function convertStringToDate($date)
     {
         try {
             $date = new \DateTime($date);

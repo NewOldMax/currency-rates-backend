@@ -77,4 +77,9 @@ class Pair extends BasicEntity
     {
         return $this->user;
     }
+
+    public function getDuration()
+    {
+        return $this->duration;
+    }
 }
