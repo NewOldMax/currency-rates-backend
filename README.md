@@ -18,5 +18,7 @@
  - run `docker-compose -p currency_rates build` to build containers
  - run `docker-compose -p currency_rates up -d` to start containers
  - run `sh scripts/install.sh` to perform vendors installation
- - run `docker exec currencyrates_php_1 php currency-rates:rate:populate` to populate currency rates (if you see any errors in console, you can wait few minutes and try again)
+ - run `docker exec currencyrates_php_1 php app/console currency-rates:rate:populate` to populate currency rates for last 25 weeks (if you see any errors in console, you can wait few minutes and try again)
  - (optional) run `sh scripts/populate-data.sh` to recreate database and populate currency rates
+
+After that your backend will be ready, and you can start with [frontend](https://github.com/NewOldMax/currency-rates-frontend)
