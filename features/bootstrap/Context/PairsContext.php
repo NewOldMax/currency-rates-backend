@@ -48,6 +48,24 @@ class PairsContext extends CommonContext
     }
 
     /**
+     * @Given Rates exist
+     */
+    public function ratesExist()
+    {
+        $manager = $this->getContainer()->get('app_currency_rate_manager');
+        $em = $this->getEntityManager();
+        for ($i = 1; $i < 11; $i++) {
+            $rate = $manager->create([
+                'currency' => 'USD',
+                'value' => ($i + 1) * 0.01,
+                'date' => date('Y-m-'.$i),
+            ]);
+            $em->persist($rate);
+        }
+        $em->flush();
+    }
+
+    /**
      * @Given I want to get list of pairs
      */
     public function iWantToGetListOfPairs()
@@ -192,5 +210,79 @@ class PairsContext extends CommonContext
     public function iWantToDeleteMyPair()
     {
         $this->delete('/api/pairs/'.$this->pairs[0]->getId());
+    }
+
+    /**
+     * @Given I want to get rates for pair
+     */
+    public function iWantToGetRatesForPair()
+    {
+        $this->get('/api/pairs/'.$this->pairs[0]->getId().'/historical');
+    }
+
+    /**
+     * @Then I see rates
+     */
+    public function iSeeRates()
+    {
+        try {
+            $this
+                ->responseCodeShouldBe(200)
+                ->jsonResponse()
+                ->equal('[
+                    {
+                        "currency":"USD",
+                        "value":0.11,
+                        "date":"'.date('Y-m-10').'"
+                    },
+                    {
+                        "currency":"USD",
+                        "value":0.1,
+                        "date":"'.date('Y-m-09').'"
+                    },
+                    {
+                        "currency":"USD",
+                        "value":0.09,
+                        "date":"'.date('Y-m-08').'"
+                    },
+                    {
+                        "currency":"USD",
+                        "value":0.08,
+                        "date":"'.date('Y-m-07').'"
+                    },
+                    {
+                        "currency":"USD",
+                        "value":0.07,
+                        "date":"'.date('Y-m-06').'"
+                    },
+                    {
+                        "currency":"USD",
+                        "value":0.06,
+                        "date":"'.date('Y-m-05').'"
+                    },
+                    {
+                        "currency":"USD",
+                        "value":0.05,
+                        "date":"'.date('Y-m-04').'"
+                    },
+                    {
+                        "currency":"USD",
+                        "value":0.04,
+                        "date":"'.date('Y-m-03').'"
+                    },
+                    {
+                        "currency":"USD",
+                        "value":0.03,
+                        "date":"'.date('Y-m-02').'"
+                    },
+                    {
+                        "currency":"USD",
+                        "value":0.02,
+                        "date":"'.date('Y-m-01').'"
+                    }
+                ]', ['at' => 'rates']);
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage() . " " . $this->getResponse()->getContent());
+        }
     }
 }

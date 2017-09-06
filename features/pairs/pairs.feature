@@ -4,6 +4,7 @@ Feature: Pairs
     Background: There are existing instances in the system
         Given I signed in as user
         And Pairs exist
+        And Rates exist
 
     Scenario: I can view list of pairs
         When I want to get list of pairs
@@ -48,3 +49,7 @@ Feature: Pairs
         Then response code is 204
         When I want to get one pair
         Then response code is 404
+
+    Scenario: I can get rates for pair
+        When I want to get rates for pair
+        Then I see rates
