@@ -11,7 +11,7 @@ docker exec currencyrates_php_1 php app/console doctrine:database:create --if-no
 docker exec currencyrates_php_1 php app/console doctrine:migrations:migrate -n && \
 docker exec currencyrates_php_1 php app/console doctrine:migrations:migrate -n --env=test && \
 # Populate some dummy data for dev usage
-# ...
+docker exec currencyrates_php_1 php currency-rates:rate:populate
 
 
 result=$?
