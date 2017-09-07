@@ -42,7 +42,7 @@ class Pair extends BasicEntity
         $this->user = $fields['user'] ?? null;
     }
 
-    public function createFromArray($fields)
+    public static function createFromArray($fields)
     {
         return new self($fields);
     }

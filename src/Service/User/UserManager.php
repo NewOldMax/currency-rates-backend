@@ -26,7 +26,7 @@ class UserManager extends Manager
         return $user;
     }
 
-    public function createFromGoogle(array $fields)
+    public static function createFromGoogle(array $fields)
     {
         $this->required = ['email', 'id'];
         $this->validate($fields, User::class);

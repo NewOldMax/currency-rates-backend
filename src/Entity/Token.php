@@ -24,7 +24,7 @@ class Token
         $this->expiredAt = $fields['expiredAt'];
     }
 
-    public function createFromArray($fields)
+    public static function createFromArray($fields)
     {
         return new self($fields);
     }

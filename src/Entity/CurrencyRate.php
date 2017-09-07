@@ -28,7 +28,7 @@ class CurrencyRate extends BasicEntity
         $this->date = $fields['date'];
     }
 
-    public function createFromArray($fields)
+    public static function createFromArray($fields)
     {
         return new self($fields);
     }
