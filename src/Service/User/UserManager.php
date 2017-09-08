@@ -26,7 +26,7 @@ class UserManager extends Manager
         return $user;
     }
 
-    public static function createFromGoogle(array $fields)
+    public function createFromGoogle(array $fields)
     {
         $this->required = ['email', 'id'];
         $this->validate($fields, User::class);
@@ -85,17 +85,5 @@ class UserManager extends Manager
     {
         $user->refreshSeed();
         return $user;
-    }
-
-    private function generatePassword($length)
-    {
-        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-        $pass = [];
-        $alphaLength = strlen($alphabet) - 1;
-        for ($i = 0; $i < $length; $i++) {
-            $n = rand(0, $alphaLength);
-            $pass[] = $alphabet[$n];
-        }
-        return implode($pass);
     }
 }
